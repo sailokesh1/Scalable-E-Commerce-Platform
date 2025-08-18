@@ -3,10 +3,12 @@ package com.varunmatangi.order_service.service;
 import com.varunmatangi.order_service.dto.CreateOrderRequestDTO;
 import com.varunmatangi.order_service.dto.OrderItemRequest;
 import com.varunmatangi.order_service.dto.OrderResponseDTO;
+import com.varunmatangi.order_service.dto.ProductResponseDTO;
 import com.varunmatangi.order_service.entity.Order;
 import com.varunmatangi.order_service.entity.OrderItem;
 import com.varunmatangi.order_service.mapper.OrderMapper;
 import com.varunmatangi.order_service.repository.OrderRepo;
+import com.varunmatangi.order_service.service.http.ProductHttpClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import java.util.UUID;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepo orderRepository;
     private final OrderMapper orderMapper;
+    private final ProductHttpClient httpClient;
 
     public OrderResponseDTO createOrder(CreateOrderRequestDTO request) {
         Order order = orderMapper.toEntity(request);
@@ -27,10 +30,18 @@ public class OrderServiceImpl implements OrderService {
         double total = 0.0;
 
         for (OrderItemRequest itemReq : request.getItems()) {
+            ProductResponseDTO product = httpClient.getProductById(itemReq.getProductId());
             OrderItem item = orderMapper.toEntity(itemReq);
             item.setOrder(order);
             total += item.getSubtotal();
             items.add(item);
+
+            if(product.getProductStock()>= item.getQuantity()) {
+                httpClient.reduceStock(item.getProductId(), item.getQuantity());
+                order.setOrderStatus("PLACED");
+            }else {
+                order.setOrderStatus("PENDING");
+            }
         }
 
         order.setOrderItems(items);

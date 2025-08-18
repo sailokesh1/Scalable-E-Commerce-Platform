@@ -11,4 +11,6 @@ public interface ProductService {
     List<ProductResponseDTO> getAllProducts();
 
     ProductResponseDTO addProduct(AddProductRequestDTO addProductRequestDTO);
+
+    void reduceStock(String productId, int quantity);
 }

@@ -40,4 +40,13 @@ public class ProductServiceImpl implements ProductService{
         Product product = productRepo.save(productMapper.addProductDTOtoProduct(addProductRequestDTO));
         return productMapper.productToProductResponseDTO(product);
     }
+
+    @Override
+    public void reduceStock(String productId, int quantity) {
+        Product productById = findProductById(productId);
+        if(productById.getProductStock()>=quantity) {
+            productById.setProductStock(productById.getProductStock()-quantity);
+            productRepo.save(productById);
+        }
+    }
 }

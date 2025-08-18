@@ -10,6 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateOrderRequestDTO {
-    private String orderStatus;
     private List<OrderItemRequest> items;
 }
