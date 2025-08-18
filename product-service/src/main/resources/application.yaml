@@ -1,14 +1,7 @@
 spring:
   application:
     name: PRODUCT-SERVICE
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      username: varunmatangi
-      password: Matangi@432
-      database: Products
-      authentication-database: admin
-
+  profiles:
+    active: ${PROFILE:local}
 server:
   port: 8002
