@@ -113,7 +113,7 @@
                             <version>0.2.0</version>
                         </path>
 					</annotationProcessorPaths>
-				</configuration>
+				</conguration>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
